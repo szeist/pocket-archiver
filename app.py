@@ -1,5 +1,7 @@
+import sys
 import os
 import time
+import logging
 from urllib.parse import quote
 import requests
 from flask import Flask, request, Response, redirect, session, jsonify
@@ -14,6 +16,11 @@ AUTH_PASS = os.environ['AUTH_PASS']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SESSION_SECRET_KEY
+
+if 'DYNO' in os.environ:
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    app.logger.setLevel(logging.WARNING)
+
 sslify = SSLify(app, permanent=True)
 auth = HTTPBasicAuth()
 
